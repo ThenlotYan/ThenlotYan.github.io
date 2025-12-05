@@ -234,7 +234,8 @@ function afficherAbout() {
         "Zigotos : Ribeiro Chloé",
         "Zigotos : Montabord Marc-Alexandre",
         "Zigotos : Michel Jonathan",
-        "Zigotos : Fontaine Romain"
+        "Zigotos : Fontaine Romain",
+        "Il y a un snake caché. bonne chance :)"
     ];
     const txt = "Les 4 gars & 4 Zigotos :\n" + membres.join("\n");
     ajouterTexte(txt);

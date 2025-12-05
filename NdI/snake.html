@@ -4,25 +4,17 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Snake avec conditions de déblocage multiples (Sans flou)</title>
 <link rel="stylesheet" href="snake.css">
+<title>Snake - Démarrage automatique</title>
 </head>
 <body>
 <canvas width="600" height="600"></canvas>
 <div id="message-deblocage" style="display:none;"></div> 
 
 <script>
-// --- PARAMÈTRES DE DÉBLOCAGE ---
-const CLE_DEBLOCAGE = 'jeu_precedent_termine';
-const VALEUR_EXACTE_DEBLOCAGE = 13; 
-// Clés des scores secondaires
-const CLE_SCORE_2 = 'score_jeu_2';
-const CLE_SCORE_3 = 'score_jeu_3';
-// ------------------------------
-
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext('2d');
-const messageDeblocage = document.getElementById('message-deblocage');
+// const messageDeblocage est conservé mais n'est plus utilisé pour le blocage
 
 let box = 30;
 let snake = [{ x: 10*box, y: 10*box }];
@@ -40,59 +32,17 @@ let speed = 150;
 let gameOver = false;
 let game;
 
-const loseSound = new Audio('lose.mp3'); // Assurez-vous d'avoir ce fichier
+const loseSound = new Audio('lose.mp3'); 
 const background = new Image();
-background.src = 'pinguin.webp'; // Assurez-vous d'avoir ce fichier
+background.src = 'pinguin.webp'; 
 
-// --- LOGIQUE DE VÉRIFICATION ET D'AFFICHAGE ---
-
-function verifierDeblocage() {
-    // 1. Récupération des scores depuis localStorage
-    const scorePrincipal = parseInt(localStorage.getItem(CLE_DEBLOCAGE)) || 0;
-    const score2 = parseInt(localStorage.getItem(CLE_SCORE_2)) || 0;
-    const score3 = parseInt(localStorage.getItem(CLE_SCORE_3)) || 0;
-
-    // 2. Évaluation des conditions
-    const condition1 = scorePrincipal === VALEUR_EXACTE_DEBLOCAGE;
-    const condition2_3 = score2 > 0 && score3 > 0;
-
-    const deblocageTotal = condition1 && condition2_3;
-    
-    // 3. Gestion de l'affichage (Sans filtre CSS sur le canvas)
-    if (deblocageTotal) {
-        messageDeblocage.style.display = 'none';
-        canvas.style.filter = 'none'; 
-        canvas.style.opacity = 1; 
-        return true;
-    } else {
-        messageDeblocage.style.display = 'block';
-        canvas.style.filter = 'none'; 
-        canvas.style.opacity = 1; 
-        
-        // Mise à jour du message
-        let messageHTML = "🔓 **Jeu Verrouillé !** 🔒<br>Vous devez remplir les conditions suivantes :<hr>";
-        
-        if (!condition1) {
-            messageHTML += `❌ **Score Principal (${CLE_DEBLOCAGE}) :** Doit être **EXACTEMENT ${VALEUR_EXACTE_DEBLOCAGE}** (Actuel: ${scorePrincipal})<br>`;
-        } else {
-             messageHTML += `✅ **Score Principal :** OK<br>`;
-        }
-
-        const checkScore = (key, score) => score > 0 ? `✅ **Score ${key} :** OK<br>` : `❌ **Score ${key} :** Doit être > 0 (Actuel: ${score})<br>`;
-        
-        messageHTML += checkScore(CLE_SCORE_2, score2);
-        messageHTML += checkScore(CLE_SCORE_3, score3);
-        
-        messageDeblocage.innerHTML = messageHTML;
-        return false;
-    }
-}
-
+// --- La fonction verifierDeblocage() a été retirée ---
 
 document.addEventListener("keydown", direction);
 
 function direction(event){
-    if (typeof game === 'undefined' || gameOver || !verifierDeblocage()) return;
+    // Le jeu est toujours débloqué, donc pas de vérification ici
+    if (gameOver) return;
     
     let key = event.keyCode;
     if (key == 37 && d != "RIGHT") d = "LEFT";
@@ -101,9 +51,8 @@ function direction(event){
     else if (key == 40 && d != "UP") d = "DOWN";
 }
 
-// Fonctions de dessin de base (roundRect, draw, collision)
+// Dessiner rectangle arrondi (inchangé)
 function roundRect(x, y, w, h, r, fillColor, strokeColor, lineWidth) {
-    // ...
     ctx.beginPath();
     ctx.moveTo(x+r, y);
     ctx.lineTo(x+w-r, y);
@@ -123,14 +72,9 @@ function roundRect(x, y, w, h, r, fillColor, strokeColor, lineWidth) {
 }
 
 function draw(){
-    if (typeof game === 'undefined') {
+    // Si le jeu est terminé, arrête le dessin
+    if (gameOver) {
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-        return; 
-    }
-    
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-    if(gameOver){
         ctx.fillStyle = "rgba(0,0,0,0.6)";
         ctx.fillRect(0, canvas.height/2 - 50, canvas.width, 100);
         ctx.fillStyle = "red";
@@ -142,6 +86,8 @@ function draw(){
         clearInterval(game);
         return;
     }
+    
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
     let snakeX = snake[0].x;
     let snakeY = snake[0].y;
@@ -244,15 +190,17 @@ function collision(head, array){
 
 // --- INITIALISATION AU CHARGEMENT ---
 window.onload = () => {
-    const estDebloque = verifierDeblocage();
-
-    if (estDebloque) {
-        game = setInterval(draw, speed);
-    } 
-
+    // Le jeu démarre immédiatement, sans condition
     background.onload = () => {
+        // Lance le jeu après le chargement de l'image
+        game = setInterval(draw, speed); 
         draw(); 
     };
+
+    // Si l'image est déjà chargée (cache), lance le jeu immédiatement
+    if (background.complete) {
+        game = setInterval(draw, speed);
+    }
 }
 </script>
 </body>
