@@ -59,24 +59,35 @@ function draw(){
         ctx1.fillRect(i*bw,canvas1.height-h,bw-1,h);
     });
 
-    /* ==== RIGHT VISUALIZER : CERCLE ==== */
+    /* ==== RIGHT VISUALIZER : CERCLES CONCENTRIQUES ==== */
     ctx2.fillStyle="#050505";
     ctx2.fillRect(0,0,canvas2.width,canvas2.height);
 
     let cx=canvas2.width/2, cy=canvas2.height/2;
-    let radius = 50 + buffer[5]; // bat avec les basses
 
-    ctx2.beginPath();
-    ctx2.arc(cx,cy,radius,0,Math.PI*2);
-    ctx2.strokeStyle=`hsl(${buffer[10]*2},100%,60%)`;
-    ctx2.lineWidth=4;
-    ctx2.stroke();
+    let baseRadius = 30;  // rayon de base du plus petit cercle
+    let maxCircles = 40;   // nombre de cercles à dessiner
+    let gap = 15;         // espace entre chaque cercle
 
-    // onde autour
+    for(let c=0; c < maxCircles; c++){
+        let freqIndex = Math.floor((buffer.length / maxCircles) * c);
+        let radius = baseRadius + c*gap + buffer[freqIndex]/3;
+
+        ctx2.beginPath();
+        ctx2.arc(cx, cy, radius, 0, Math.PI*2);
+
+        // Change couleur selon le cercle et sa fréquence
+        ctx2.strokeStyle = `hsl(${(buffer[freqIndex]*3 + c*60) % 360}, 100%, 60%)`;
+        ctx2.lineWidth = 3 - c*0.4;  // cercles extérieurs plus fins
+        ctx2.stroke();
+    }
+
+    // onde extérieure dynamique
+    let radius = baseRadius + (maxCircles-1)*gap + buffer[5]/3;
     ctx2.beginPath();
     for(let i=0;i<buffer.length;i++){
         let angle=(i/buffer.length)*Math.PI*2;
-        let r = radius + buffer[i]/3;
+        let r = radius + buffer[i]/4;
         let x=cx+Math.cos(angle)*r;
         let y=cy+Math.sin(angle)*r;
         i===0 ? ctx2.moveTo(x,y) : ctx2.lineTo(x,y);
@@ -86,6 +97,7 @@ function draw(){
     ctx2.lineWidth=2;
     ctx2.stroke();
 }
+
 draw();
 resize();
 
@@ -127,7 +139,7 @@ function draw3(){
     ctx3.fillStyle = "#000";
     ctx3.fillRect(0, 0, canvas3.width, canvas3.height);
 
-    ctx3.lineWidth = 2;
+    ctx3.lineWidth = 3;
     ctx3.strokeStyle = "hsl(200, 100%, 60%)";
 
     ctx3.beginPath();
