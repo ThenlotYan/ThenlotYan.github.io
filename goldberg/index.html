@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Defi Goldberg</title>
+        <link rel="stylesheet" href="style.css"/>
+    </head>
+    <body>
+        <h1>Cliquez sur le bouton !</h1>
+        <p>(ou du moins essayez)</p>
+        <button onclick="suivant(0)" id="popup0">Commencer</button>
+        
+        <div id="popup1" class="question">
+            <p><strong>Voulez-vous gagner ce jeu ?</strong></p>
+            <button onclick="suivant(1)">OUI</button>
+            <button onclick="location.reload()">NON</button>
+        </div>
+        
+        <div id="popup2" class="question">
+            <p><strong>Voulez-vous vraiment gagner ce jeu ?</strong></p>
+            <button onclick="suivant(2)">OUI</button>
+            <button onclick="location.reload()">NON</button>
+        </div>
+        
+        <div id="popup3" class="question">
+            <p><strong>Voulez-vous vraiment vraiment gagner ce jeu ?</strong></p>
+            <button onclick="suivant(3)">OUI</button>
+            <button onclick="location.reload()">NON</button>
+        </div>
+        
+        <div id="popup4" class="question">
+            <p><strong>Voulez-vous finir ce jeu ?</strong></p>
+            <button onclick="suivant(4)">OUI</button>
+            <button onclick="location.reload()">NON</button>
+        </div>
+        
+        <div id="popup5" class="question">
+            <p><strong>Voulez-vous recommencer ce jeu ?</strong></p>
+            <button onclick="location.reload()">OUI</button>
+            <button onclick="suivant(5)">NON</button>
+        </div>
+        
+        <div id="popup6" class="question">
+            <p><strong>Voulez-vous de nouveau gagner ce jeu ?</strong></p>
+            <button onclick="suivant(6)">OUI</button>
+            <button onclick="location.reload()">NON</button>
+        </div>
+        
+        <div id="popup7" class="question">
+            <p><strong>Voulez-vous toujours finir ce jeu ?</strong></p>
+            <button onclick="suivant(7)">OUI</button>
+            <button onclick="location.reload()">NON</button>
+        </div>
+        
+        <div id="popup8" class="question">
+            <p><strong>Vous pouvez enfin retourner en arriere</strong></p>
+            <button onclick="history.back()">OUI, merci</button>
+            <button onclick="location.reload()">NON</button>
+        </div>
+
+
+
+    <script>
+        function suivant(num){
+                // Afficher la question suivante
+            let prec=document.getElementById('popup' + num);
+            let suivante = document.getElementById('popup' + (num + 1));
+            if (prec) prec.style.display = "none";
+            if (suivante) suivante.style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
