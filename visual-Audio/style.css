@@ -1,26 +1,116 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
-body {
-  background: #1e1e1e;
-  font-family: Consolas, monospace;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+body{
+    background:#1e1e1e;
+    font-family:Consolas,monospace;
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
 }
 
 /* Top panels container */
+#top{
+    flex:1;
+    display:flex;
+    min-height:200px;
+}
+
+/* Panels */
+.pane{
+    background:#111;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    position:relative;
+}
+
+.title{
+    background:#262626;
+    width:100%;
+    padding:6px 10px;
+    font-size:14px;
+    color:#9cdcfe;
+    border-bottom:1px solid #333;
+}
+
+/* Terminal */
+#bottom{
+    background:#0d0d0d;
+    border-top:2px solid #333;
+    height:200px;
+    overflow:auto;
+    display:flex;
+    flex-direction:column;
+}
+
+#terminal{
+    padding:10px;
+    color:#0bcf6c;
+    flex:1;
+    overflow-y:auto;
+}
+
+/* Gutter bars created by Split.js */
+.gutter{
+    background:#333;
+}
+.gutter.gutter-horizontal{
+    cursor:col-resize;
+    width:5px;
+}
+.gutter.gutter-vertical{
+    cursor:row-resize;
+    height:5px;
+}
+
+#music-controls{
+    padding:8px 10px;
+    background:#111;
+    border-bottom:1px solid #333;
+    color:#0bcf6c;
+    font-size:14px;
+    display:flex;
+    gap:20px;
+}
+
+#music-controls input{
+    transform:scale(1.2);
+    margin-right:6px;
+}
+
+
+canvas{
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+
+#visualizer3-container {
+    background: #111;
+    display: flex;
+    flex-direction: column;
+}
+
+#visualizer3 {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+
+
+
 #top {
   flex: 1;
   display: flex;
   min-height: 200px;
+  overflow: hidden;
 }
 
-/* Panels */
 .pane {
   background: #111;
   color: white;
@@ -30,72 +120,25 @@ body {
   position: relative;
 }
 
-.title {
-  background: #262626;
+.pane canvas {
+  flex: 1;
   width: 100%;
-  padding: 6px 10px;
-  font-size: 14px;
-  color: #9cdcfe;
-  border-bottom: 1px solid #333;
+  display: block;
 }
 
-/* Terminal */
-#bottom {
-  background: #0d0d0d;
-  border-top: 2px solid #333;
-  height: 200px;
-  overflow: auto;
+
+#middle {
+  min-width: 150px;
+  min-height: 200px;
   display: flex;
   flex-direction: column;
 }
 
-#terminal {
-  padding: 10px;
-  color: #0bcf6c;
+#visualizerSquare {
   flex: 1;
-  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-/* Gutter bars created by Split.js */
-.gutter {
-  background: #333;
-}
-.gutter.gutter-horizontal {
-  cursor: col-resize;
-  width: 5px;
-}
-.gutter.gutter-vertical {
-  cursor: row-resize;
-  height: 5px;
-}
 
-/* Music controls */
-#music-controls {
-  padding: 8px 10px;
-  background: #111;
-  border-bottom: 1px solid #333;
-  color: #0bcf6c;
-  font-size: 14px;
-  display: flex;
-  gap: 20px;
-}
-
-#music-controls input {
-  transform: scale(1.2);
-  margin-right: 6px;
-}
-
-/* IMPORTANT: make #left a flex column with container filling space */
-#left {
-  display: flex;
-  flex-direction: column;
-}
-
-/* container for visuality canvas fills remaining space */
-#visuality-container {
-  flex: 1;
-  display: flex;
-  /* optionally set a min height */
-  min-height: 150px;
-  position: relative;
-}

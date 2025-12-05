@@ -1,79 +1,117 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<title>Test vi·si·cal·i·ty Visualizer Simple</title>
+<meta charset="UTF-8">
+<title>Resizable Visualizer Layout</title>
 
-<style>
-  body, html {
-    margin: 0; padding: 0; height: 100%; background: #111;
-    display: flex; justify-content: center; align-items: center;
-    color: #0bcf6c; font-family: monospace;
-    flex-direction: column;
-  }
-  canvas {
-    border: 1px solid #0bcf6c;
-    display: block;
-    width: 600px;
-    height: 300px;
-  }
-  #controls {
-    margin-top: 20px;
-  }
-</style>
+<!-- CSS -->
+<link rel="stylesheet" href="style.css">
 
-<!-- vi·si·cal·i·ty -->
-<script src="https://cdn.jsdelivr.net/npm/vi-si-cal-i-ty@1.0.1/build/visuality.min.js"></script>
+<!-- Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+
+<!-- Exposer l'analyser que l'on créera depuis app.js -->
+<script>
+  // createSharedAnalyser() sera appelé depuis app.js après avoir initialisé `audio`
+  window.createSharedAnalyser = async function(audioElement){
+    if (!audioElement) return;
+    const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+    // si un contexte existe déjà (sécurité), on l'utilise
+    if (window.externalAudioContext && window.externalAudioContext.state) {
+      // reconnecter la source si nécessaire
+      const ctx = window.externalAudioContext;
+      // si la source existait, ne recrée pas
+      try {
+        const src = ctx.createMediaElementSource(audioElement);
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 512;
+        src.connect(analyser);
+        src.connect(ctx.destination);
+        window.externalAnalyser = analyser;
+        window.externalAudioElement = audioElement;
+        console.log("shared analyser ready (recreated)");
+        return;
+      } catch(e){
+        // ok fallback on continue to create a new context
+        console.warn("couldn't reuse externalAudioContext", e);
+      }
+    }
+
+    const ctx = new AudioContextCtor();
+    const src = ctx.createMediaElementSource(audioElement);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 512;
+    src.connect(analyser);
+    src.connect(ctx.destination);
+
+    // rendre accessible au script 3D
+    window.externalAudioContext = ctx;
+    window.externalAnalyser = analyser;
+    window.externalAudioElement = audioElement;
+    console.log("shared analyser ready");
+  };
+</script>
+
+<!-- script du visualizer 3D (modifié, ne démarre pas tout seul) -->
+<script src="3d-audio-visualizer/script.js"></script>
+
+<!-- Split.js -->
+<script src="https://unpkg.com/split.js/dist/split.min.js"></script>
 </head>
 <body>
 
-<canvas id="visCanvas"></canvas>
+  
 
-<div id="controls">
-  <button id="playBtn">Play Music</button>
+<div id="top">
+  <div id="left" class="pane">
+      <div class="title">Visualizer 2D</div>
+      <canvas id="visualizer2d"></canvas>
+  </div>
+
+  
+
+  <div id="right" class="pane">
+      <div class="title">Visualizer 3D</div>
+      <canvas id="visualizer3d"></canvas>
+  </div>
 </div>
 
-<script>
-  // Setup audio
-  const audio = new Audio('musics/rap.mp3'); // Mets ton mp3 ici
-  audio.crossOrigin = "anonymous";
+<div id="bottom">
+   <div id="visualizer3-container" class="pane" style="height:150px;">
+        <div class="title">Visualizer Waves</div>
+        <canvas id="visualizer3"></canvas>
+    </div>
+    <div class="title">Terminal</div>
 
-  // AudioContext et analyser
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const audioContext = new AudioContext();
+    <div id="music-controls">
+        <label><input type="radio" name="music" value="rap"> Rap</label>
+        <label><input type="radio" name="music" value="techno"> Techno</label>
+        <label><input type="radio" name="music" value="electro"> Electro</label>
+        <label><input type="radio" name="music" value="techno-acid"> Techno Acid</label>
+        <label><input type="radio" name="music" value="pop"> Pop</label>
 
-  const sourceNode = audioContext.createMediaElementSource(audio);
-  const analyser = audioContext.createAnalyser();
+        <label><input type="radio" name="music" value="groove-metal"> groove-metal</label>
+        <label><input type="radio" name="music" value="fonk"> fonk</label>
+        <label><input type="radio" name="music" value="slow-fonk"> slow-fonk</label>
+        <label><input type="radio" name="music" value="color-wave"> color-wave</label>
+        <label><input type="radio" name="music" value="metal-japonais"> metal-japonais</label>
+        <label><input type="radio" name="music" value="son-turc"> son-turc</label>
 
-  sourceNode.connect(analyser);
-  analyser.connect(audioContext.destination);
+        <br>
+        <label for="file-input" style="color:#0bcf6c; cursor:pointer; margin-left:0px;">
+          🎵 Charger fichier
+        </label>
+        <input type="file" id="file-input" accept="audio/*" style="display:none;">
 
-  // Visuality init
-  const canvas = document.getElementById('visCanvas');
-  const visualizer = new Visuality(canvas, {
-    analyser: analyser,
-    type: 'bars',
-    barsCount: 40,
-    barWidth: 8,
-    barSpacing: 4,
-    color: '#00ffff'
-  });
+    </div>
 
-  function animate() {
-    visualizer.update();
-    requestAnimationFrame(animate);
-  }
-  animate();
 
-  // Gestion du bouton play
-  document.getElementById('playBtn').addEventListener('click', () => {
-    if (audioContext.state !== 'running') {
-      audioContext.resume();
-    }
-    audio.play();
-  });
 
-</script>
+    <div id="terminal">> ready...</div>
+</div>
+
+<!-- JS -->
+<script src="app.js"></script>
 
 </body>
 </html>
