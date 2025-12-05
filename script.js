@@ -125,17 +125,26 @@ Commandes disponibles:
 
 
 function ouvrirFichier(cmd) {
-    const filename = cmd.slice(2) + ".html"; // récupère le nom + .html
-
-    if (fichiersValides.includes(filename)) {
-        ajouterTexte(`Ouverture de ${filename} ...`);
+    const baseName = cmd.slice(2); // nom après ./
+    
+    if (baseName === "quiz") {
+        ajouterTexte(`Ouverture de quiz obsolescence/index.html ...`);
         setTimeout(() => {
-            window.location.href = filename;
+            window.location.href = "quiz obsolescence/index.html";
         }, 700);
     } else {
-        ajouterTexte(`Erreur : le fichier "${filename}" n'existe pas.`);
+        const filename = baseName + ".html";
+        if (fichiersValides.includes(filename)) {
+            ajouterTexte(`Ouverture de ${filename} ...`);
+            setTimeout(() => {
+                window.location.href = filename;
+            }, 700);
+        } else {
+            ajouterTexte(`Erreur : le fichier "${filename}" n'existe pas.`);
+        }
     }
 }
+
 
 
 function afficherInconnu(cmd) {
