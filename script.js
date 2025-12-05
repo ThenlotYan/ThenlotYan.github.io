@@ -227,7 +227,7 @@ function afficherAbout() {
         "Gars : Louis Mathis",
         "Gars : Wickers Nolann",
         "Zigotos : Ribeiro Chloé",
-        "Zigotos : montabord Marc-Alexandre",
+        "Zigotos : Montabord Marc-Alexandre",
         "Zigotos : Michel Jonathan",
         "Zigotos : Fontaine Romain"
     ];
